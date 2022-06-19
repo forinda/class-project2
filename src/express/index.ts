@@ -24,11 +24,12 @@ export default ({ app }: { app: Application }): void => {
 		);
 		// process.exit(1);
 	});
-	process.on('unhandledRejection', (err: Error) => {
+	process.on('unhandledRejection', (err: Error,promise) => {
 		processLogger.info(
 			JSON.stringify({
 				time: moment().format('LLLL'),
 				error: err.message,
+				promise,
 				message: 'Uncaught Rejection... Shutting down node process',
 			}),
 		);
