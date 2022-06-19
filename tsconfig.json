@@ -76,11 +76,23 @@
       ],
       "@blog-api-logger/*": [
         "./src/logger/*"
-      ],"@blog-api-middlewares": [
+      ],
+      "@blog-api-middlewares": [
         "./src/middlewares"
       ],
       "@blog-api-middlewares/*": [
         "./src/middlewares/*"
+      ],
+      "@blog-api-uploader": [
+        "./src/uploader"
+      ],
+      "@blog-api-uploader/*": [
+        "./src/uploader/*"
+      ],"@blog-api-uploadSdk": [
+        "./src/uploadSdk"
+      ],
+      "@blog-api-uploadSdk/*": [
+        "./src/uploadSdk/*"
       ],
       "@blog-api-swagger": [
         "./src/swagger"
