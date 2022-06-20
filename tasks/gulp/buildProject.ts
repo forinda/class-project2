@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import gulp from 'gulp';
-import ts from 'gulp-typescript';
-import sourcemaps from 'gulp-sourcemaps';
 import alias from 'gulp-ts-alias';
+import gulp from 'gulp';
+import sourcemaps from 'gulp-sourcemaps';
+import ts from 'gulp-typescript';
 // Gulp buildProject task
 //  Language: TypeScript
 //  Path: tasks/gulp/buildProject.ts
 const tsProject = ts.createProject('tsconfig.json');
+
 function buildProject() {
 	const compiled = gulp
 		.src('src/**/*.ts')
