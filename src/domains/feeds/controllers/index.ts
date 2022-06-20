@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FeedsUseCases } from '../useCases';
 import { IFeedsController, IFeedsUseCases } from '../interfaces';
@@ -9,10 +10,9 @@ export class FeedsController implements IFeedsController {
 	getFeedsByTitle: (req: IReq, res: IRes, next: INext) => Promise<any> =
 		async (req, res, next) => {
 			try {
-				const title = req.params.title;
-				const result = await this.useCases.listFeedByTitle(title);
-                
-				return res.status(200).json(result);
+				const result = await this.useCases.listFeedByTitle(req.params.title);
+
+				return res.json(result);
 			} catch (error) {
 				return next(error);
 			}
@@ -27,6 +27,7 @@ export class FeedsController implements IFeedsController {
 			const response = await this.useCases.addFeed(
 				req.user.userId,
 				req.body,
+				req,
 			);
 
 			res.status(201).json({ data: response });

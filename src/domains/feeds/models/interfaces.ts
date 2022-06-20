@@ -4,14 +4,20 @@ import mongoose from '@blog-api-databases/mongodb';
 
 export interface IFeeds {
 	author: any;
-	title: string;
-	exerpt: string;
 	body: string;
-	featuredImage: any;
+	media?: IMedia;
 	views: number;
-	tags: any[];
+	tags: string;
 	// isPublished: boolean;
 	isDeleted: boolean;
+}
+
+export interface IMedia {
+	asset_id: string;
+	public_id: string;
+	version: string;
+	version_id: string;
+	url: string;
 }
 
 export interface IFeedsDocument extends IFeeds, mongoose.Document {
@@ -21,5 +27,3 @@ export interface IFeedsDocument extends IFeeds, mongoose.Document {
 export interface IFeedsModel extends mongoose.Model<IFeedsDocument> {
 	findAll(): Promise<IFeedsDocument[]>;
 }
-
-

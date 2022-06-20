@@ -9,31 +9,26 @@ const feedsSchema: mongoose.Schema<IFeedsDocument> = new mongoose.Schema(
 			ref: 'User',
 			required: true,
 		},
-		title: {
-			type: String,
-			required: true,
-			unique: true,
-		},
-		exerpt: {
-			type: String,
-			maxlength: 200,
-			required: true,
-		},
+
 		body: {
 			type: String,
-			required: true,
+			required: false,
 		},
-		featuredImage: {
+		media: {
 			type: {
-				url: String,
+				asset_id: String,
 				public_id: String,
-				defaultUrl: String,
+				version: String,
+				version_id: String,
+				url: String,
 			},
 			required: false,
 			default: {
-				url: '',
+				asset_id: '',
 				public_id: '',
-				defaultUrl:'https://res.cloudinary.com/forinda/image/upload/v1641375402/sample.jpg'
+				version: '',
+				version_id: '',
+				url: '',
 			},
 		},
 		views: {
@@ -42,9 +37,9 @@ const feedsSchema: mongoose.Schema<IFeedsDocument> = new mongoose.Schema(
 			min: 0,
 		},
 		tags: {
-			type: [String],
+			type: String,
 			required: false,
-			default: [],
+			default: '',
 		},
 		isDeleted: {
 			type: Boolean,
@@ -57,10 +52,7 @@ const feedsSchema: mongoose.Schema<IFeedsDocument> = new mongoose.Schema(
 	},
 );
 
-feedsSchema.index(
-	{ title: 'text', exerpt: 'text', body: 'text' },
-	{ unique: false },
-);
+feedsSchema.index({ tags: 'text', body: 'text' }, { unique: false });
 
 const feedsModel: IFeedsModel = mongoose.model<IFeedsDocument, IFeedsModel>(
 	'Feeds',

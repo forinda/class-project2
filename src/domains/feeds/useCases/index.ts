@@ -1,9 +1,13 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BlogError } from '@blog-api-common/errors';
 import { FeedsEntity } from '../entity';
 import { FeedsRepository } from '../repository';
-import { IFeeds } from '../models/interfaces';
+import { IReq } from '@blog-api-common/requests';
+import { baseLogger } from '@blog-api-logger';
+import streamUploader from '@blog-api-uploadSdk/streamUploader';
 import { validateMongoId } from '@blog-api-helpers/validateMongoId';
+import { IFeeds, IMedia } from '../models/interfaces';
 import { IFeedsRepository, IFeedsUseCases } from '../interfaces';
 
 export class FeedsUseCases implements IFeedsUseCases {
@@ -22,62 +26,84 @@ export class FeedsUseCases implements IFeedsUseCases {
 		}
 	};
 
-	addFeed: (author: string, feedData: IFeeds) => Promise<any> = async (
-		author: string,
-		feedData: IFeeds,
-	) => {
-		if (!author) {
-			throw new BlogError({
-				message: 'Author is required',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
-			});
-		}
-		if (!validateMongoId(author)) {
-			throw new BlogError({
-				message: 'Author is not valid',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
-			});
-		}
-		feedData.author = author;
-		const {
-			getAuthor,
-			getBody,
-			getExerpt,
-			getFeaturedImage,
-			getTags,
-			getTitle,
-			getViews,
-			getIsDeleted,
-		} = FeedsEntity.createFeed(feedData);
+	addFeed: (author: string, feedData: IFeeds, req: IReq) => Promise<any> =
+		async (author: string, feedData: IFeeds, req: IReq) => {
+			if (!author) {
+				throw new BlogError({
+					message: 'Author is required',
+					status: 'warning',
+					statusCode: 400,
+					data: {},
+				});
+			}
+			if (!validateMongoId(author)) {
+				throw new BlogError({
+					message: 'Author is not valid',
+					status: 'warning',
+					statusCode: 400,
+					data: {},
+				});
+			}
+			feedData.author = author;
+			// Check if a file or a body
+			// Check if there is media or body
+			if (!feedData.body && !req.file) {
+				throw new BlogError({
+					message: 'Cannot create feed without body or media',
+					status: 'warning',
+					statusCode: 400,
+					data: {},
+				});
+			}
+			const {
+				getAuthor,
+				getBody,
+				getTags,
+				getViews,
+				getIsDeleted,
+				getMedia,
+			} = FeedsEntity.createFeed(feedData);
+			console.log(req.file);
 
-		const existing = await this.repository.findFeedByTitle(getTitle());
-		if (existing) {
-			throw new BlogError({
-				message: 'Feed title already exists',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
+			// Upload to cloudinary
+			if (req.file) {
+				try {
+					const cloudResponse = <any>await streamUploader(req);
+					const media: IMedia = {
+						url: cloudResponse.secure_url,
+						public_id: cloudResponse.public_id,
+						version: cloudResponse.version,
+						version_id: cloudResponse.version_id,
+						asset_id: cloudResponse.asset_id,
+					};
+
+					const feed = await this.repository.createFeed(getAuthor(), {
+						author: getAuthor(),
+						body: getBody(),
+						tags: getTags(),
+						views: getViews(),
+						isDeleted: getIsDeleted(),
+						media: media,
+					});
+
+					return feed;
+				} catch (error) {
+					baseLogger.error(JSON.stringify(error));
+					throw new Error(error);
+				}
+			}
+
+			const feed = await this.repository.createFeed(getAuthor(), {
+				author: getAuthor(),
+				body: getBody(),
+				tags: getTags(),
+				views: getViews(),
+				isDeleted: getIsDeleted(),
+				media: getMedia(),
 			});
-		}
-		console.log('Author: ', getAuthor());
 
-		const feed = await this.repository.createFeed(getAuthor(), {
-			author: getAuthor(),
-			body: getBody(),
-			exerpt: getExerpt(),
-			featuredImage: getFeaturedImage(),
-			tags: getTags(),
-			title: getTitle(),
-			views: getViews(),
-			isDeleted: getIsDeleted(),
-		});
-
-		return feed;
-	};
+			return feed;
+		};
 
 	listFeed: (id: string) => Promise<any> = async (id: string) => {
 		const feed = await this.repository.findFeedById(id);
@@ -126,12 +152,10 @@ export class FeedsUseCases implements IFeedsUseCases {
 		const {
 			getAuthor,
 			getBody,
-			getExerpt,
-			getFeaturedImage,
 			getTags,
-			getTitle,
 			getViews,
 			getIsDeleted,
+			getMedia,
 		} = FeedsEntity.createFeed(feedData);
 
 		const feed = await this.repository.findFeedById(id);
@@ -143,24 +167,14 @@ export class FeedsUseCases implements IFeedsUseCases {
 				data: {},
 			});
 		}
-		const existing = await this.repository.findFeedByTitle(getTitle());
-		if (existing && existing._id !== id) {
-			throw new BlogError({
-				message: 'Feed title already exists',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
-			});
-		}
+
 		const updatedFeed = await this.repository.updateFeed(id, {
 			author: getAuthor(),
 			body: getBody(),
-			exerpt: getExerpt(),
-			featuredImage: getFeaturedImage(),
 			tags: getTags(),
-			title: getTitle(),
 			views: getViews(),
 			isDeleted: getIsDeleted(),
+			media: getMedia(),
 		});
 
 		return updatedFeed;
