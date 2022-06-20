@@ -12,19 +12,19 @@ export class AuthUseCases implements IAuthUseCases {
 		return this._authRepository;
 	}
 
-	signIn = async (queryString: string, password: string): Promise<any> => {
-		if (!queryString || !password) {
+	signIn = async (username: string, password: string): Promise<any> => {
+		if (!username || !password) {
 			throw new BlogError({
 				message: 'Invalid login credentials',
 				status: 'warning',
 				statusCode: 400,
 				data: {
-					queryString,
+					username,
 				},
 			});
 		}
 		const user = await this.authRepository.findUserByEmailOrUsername(
-			queryString,
+			username,
 		);
 
 		if (!user) {
