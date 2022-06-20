@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ export const nodeConfig = {
 		secretKey: process.env.SECRET_KEY || 'mysecretkeythatisnotpublic',
 	},
 	path: {
-		baseDir: process.cwd(),
+		baseDir: path.dirname(__dirname),
 	},
 	db: {
 		sql: {

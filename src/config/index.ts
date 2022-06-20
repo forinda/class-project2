@@ -1,4 +1,4 @@
-import { nodeConfig } from './../../node.config';
+import { nodeConfig } from '../node.config';
 
 const {
 	env: { env, host, port, apiVersion, secretKey },

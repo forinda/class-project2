@@ -1,8 +1,8 @@
-import app from '@blog-api-app';
+import app from './app';
 import chalk from 'chalk';
 import { createServer } from 'http';
 import moment from 'moment';
-import { port } from '@blog-api-config';
+import { port } from './config';
 
 const server = createServer(app);
 
