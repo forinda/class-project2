@@ -16,7 +16,7 @@ export interface IFeedsController {
 }
 
 export interface IFeedsUseCases {
-	addFeed: (author: string, feedData: IFeeds) => Promise<any>;
+	addFeed: (author: string, feedData: IFeeds,req:IReq) => Promise<any>;
 	listFeed: (id: string) => Promise<any>;
 	listFeedByTitle: (title: string) => Promise<any>;
 	listFeeds: (limit: number, page: number) => Promise<any>;

@@ -1,10 +1,14 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export const nodeConfig = {
 	env: {
 		env: process.env.NODE_ENV || 'development',
 		port: process.env.PORT || 8000,
 		host: process.env.HOST || 'localhost',
-		apiVersion:process.env.API_VERSION||'/api/v1',
-		secretKey:process.env.SECRET_KEY||'mysecretkeythatisnotpublic'
+		apiVersion: process.env.API_VERSION || '/api/v1',
+		secretKey: process.env.SECRET_KEY || 'mysecretkeythatisnotpublic',
 	},
 	path: {
 		baseDir: process.cwd(),
@@ -46,5 +50,8 @@ export const nodeConfig = {
 		port: process.env.REDIS_PORT || 6379,
 		password: process.env.REDIS_PASSWORD || '',
 		url: process.env.REDIS_URL || '',
+	},
+	network: {
+		proxy: process.env.PROXY_URL || '',
 	},
 };

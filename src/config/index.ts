@@ -5,6 +5,7 @@ const {
 	db: { mongo: mongoConfig },
 	path: { baseDir },
 	cloudinary: cloudinaryConfig,
+	network: networkConfig,
 } = nodeConfig;
 
 export {
@@ -16,4 +17,5 @@ export {
 	apiVersion,
 	secretKey,
 	cloudinaryConfig,
+	networkConfig,
 };

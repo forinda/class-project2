@@ -5,41 +5,14 @@ export class FeedsEntity {
 	public static createFeed = ({
 		author,
 		body,
-		exerpt,
-		featuredImage,
 		tags,
-		title,
 		views,
-		isDeleted
+		isDeleted,
+		media,
 	}: IFeeds) => {
-		if (!title) {
+		if (body && body.length > 200) {
 			throw new BlogError({
-				message: 'Title is required',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
-			});
-		}
-		// Exerpt
-		if (!exerpt) {
-			throw new BlogError({
-				message: 'Exerpt is required',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
-			});
-		}
-		if (exerpt.length > 200) {
-			throw new BlogError({
-				message: 'Exerpt is too long',
-				status: 'warning',
-				statusCode: 400,
-				data: {},
-			});
-		}
-		if (!body) {
-			throw new BlogError({
-				message: 'Body is required',
+				message: 'Message is too long',
 				status: 'warning',
 				statusCode: 400,
 				data: {},
@@ -49,12 +22,10 @@ export class FeedsEntity {
 		return Object.freeze({
 			getAuthor: () => author,
 			getBody: () => body,
-			getExerpt: () => exerpt,
-			getFeaturedImage: () => featuredImage,
-			getTags: () => tags,
-			getTitle: () => title,
 			getViews: () => views,
-			getIsDeleted: () => isDeleted
+			getIsDeleted: () => isDeleted,
+			getMedia: () => media,
+			getTags: () => tags,
 		});
 	};
 }
