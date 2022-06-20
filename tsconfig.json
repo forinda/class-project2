@@ -137,6 +137,5 @@
   ],
   "include": [
     "./src/**/*.ts",
-    "node.config.ts"
   ]
 }
