@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import mongoose from '@blog-api-databases/mongodb';
 import { IUserDocument, IUserDocumentModel } from './interface';
@@ -39,6 +40,51 @@ const userSchema: mongoose.Schema<IUserDocument> = new mongoose.Schema(
 			default: [],
 			select: false,
 		},
+		avatar: {
+			type: {
+				asset_id: String,
+				public_id: String,
+				url: String,
+				version: String,
+				version_id: String,
+			},
+			default: {
+				asset_id: '',
+				public_id: '',
+				url: '',
+				version: '',
+				version_id: '',
+			},
+		},
+		city: {
+			type: String,
+			default: '',
+		},
+		country: {
+			type: String,
+			default: '',
+		},
+		dob: {
+			type: Date,
+			default: Date.now(),
+		},
+		firstName: {
+			type: String,
+			default: '',
+		},
+		gender: {
+			type: String,
+			enum: ['male', 'female', 'other'],
+			default: 'other',
+		},
+		lastName: {
+			type: String,
+			default: '',
+		},
+		zip: {
+			type: String,
+			default: '',
+		},
 	},
 	{
 		timestamps: true,
@@ -54,7 +100,6 @@ userSchema.statics.findUserByEmailOrUsername = async function (
 
 	return user;
 };
-
 
 const userModel = mongoose.model<IUserDocument, IUserDocumentModel>(
 	'User',

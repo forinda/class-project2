@@ -87,7 +87,7 @@ export class UserUseCases implements IUserUseCases {
 				followings: existingUser.followings.concat(userToFollowId),
 			});
 
-			return {followed:true};
+			return { followed: true };
 		};
 
 	unfollowUserUseCase: (
@@ -127,8 +127,12 @@ export class UserUseCases implements IUserUseCases {
 				});
 			}
 			// Update user to beunfollowed
-		
-			if (!userToUnfollow.followers.find((user:any)=>user._id.toString() === userId)) {
+
+			if (
+				!userToUnfollow.followers.find(
+					(user: any) => user._id.toString() === userId,
+				)
+			) {
 				throw new BlogError({
 					message: 'You cannot unfollow user that you do not follow',
 					status: 'warning',
@@ -139,11 +143,15 @@ export class UserUseCases implements IUserUseCases {
 			await this.userRepository.updateUserById(userToUnfollowId, {
 				...userToUnfollow._doc,
 				followers: userToUnfollow.followers.filter(
-					(user:any) => user._id.toString() !== userId,
+					(user: any) => user._id.toString() !== userId,
 				),
 			});
 			// Update the user following
-			if (!existingUser.followings.find((user:any)=>user._id.toString()===userToUnfollowId)) {
+			if (
+				!existingUser.followings.find(
+					(user: any) => user._id.toString() === userToUnfollowId,
+				)
+			) {
 				throw new BlogError({
 					message: 'You cannot unfollow user that you do not follow',
 					status: 'warning',
@@ -154,11 +162,11 @@ export class UserUseCases implements IUserUseCases {
 			await this.userRepository.updateUserById(userId, {
 				...existingUser._doc,
 				followings: existingUser.followings.filter(
-					(user:any) => user._id.toString() !== userToUnfollowId,
+					(user: any) => user._id.toString() !== userToUnfollowId,
 				),
 			});
 
-			return {unfollowed:true};
+			return { unfollowed: true };
 		};
 
 	listUserFollowingsUseCase: (
@@ -210,8 +218,20 @@ export class UserUseCases implements IUserUseCases {
 	addUserUseCase: (userData: IUser) => Promise<any> = async (
 		userData: IUser,
 	) => {
-		const { getEmail, getIsDeleted, getPassword, getUserName } =
-			UserEntity.createUserEntity(userData);
+		const {
+			getEmail,
+			getIsDeleted,
+			getPassword,
+			getUserName,
+			getAvatar,
+			getCity,
+			getCountry,
+			getDOB,
+			getFirstName,
+			getGender,
+			getLastName,
+			getZip,
+		} = UserEntity.createUserEntity(userData);
 		const existing = await this.userRepository.findUserByEmail(getEmail());
 		if (existing) {
 			throw new BlogError({
@@ -230,6 +250,14 @@ export class UserUseCases implements IUserUseCases {
 			isDeleted: getIsDeleted(),
 			followers: [],
 			followings: [],
+			avatar: getAvatar(),
+			city: getCity(),
+			country: getCountry(),
+			dob: getDOB(),
+			firstName: getFirstName(),
+			gender: getGender(),
+			lastName: getLastName(),
+			zip:getZip()
 		});
 
 		return user;
@@ -270,7 +298,7 @@ export class UserUseCases implements IUserUseCases {
 					},
 				});
 			}
-			const { getEmail, getIsDeleted, getPassword, getUserName } =
+			const { getEmail, getIsDeleted, getPassword, getUserName,getAvatar,getCity,getCountry,getDOB,getFirstName,getGender,getLastName,getZip } =
 			UserEntity.createUserEntity({
 				...existing,
 				...userData,
@@ -280,6 +308,14 @@ export class UserUseCases implements IUserUseCases {
 				password: getPassword(),
 				username: getUserName(),
 				isDeleted: getIsDeleted(),
+				avatar: getAvatar(),
+				city: getCity(),
+				country: getCountry(),
+				dob: getDOB(),
+				firstName: getFirstName(),
+				gender: getGender(),
+				lastName: getLastName(),
+				zip:getZip()
 			});
 
 			return user;
