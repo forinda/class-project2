@@ -1,10 +1,14 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BlogError } from '@blog-api-common/errors';
-import { IUser } from '../models/interface';
+import { IReq } from '@blog-api-common/requests';
 import { IUserUseCases } from '../interfaces';
 import { UserEntity } from './../entity';
 import { UserRepository } from '../repository';
+import { baseLogger } from '@blog-api-logger';
+import streamUploader from '@blog-api-uploadSdk/streamUploader';
 import { validateMongoId } from '@blog-api-helpers/validateMongoId';
+import { IMedia, IUser } from '../models/interface';
 
 export class UserUseCases implements IUserUseCases {
 	private userRepository: UserRepository = new UserRepository();
@@ -257,7 +261,7 @@ export class UserUseCases implements IUserUseCases {
 			firstName: getFirstName(),
 			gender: getGender(),
 			lastName: getLastName(),
-			zip:getZip()
+			zip: getZip(),
 		});
 
 		return user;
@@ -266,7 +270,12 @@ export class UserUseCases implements IUserUseCases {
 	editUserUseCase: (
 		userId: string,
 		userData: Partial<IUser>,
-	) => Promise<any> = async (userId: string, userData: Partial<IUser>) => {
+		req: IReq,
+	) => Promise<any> = async (
+			userId: string,
+			userData: Partial<IUser>,
+			req: IReq,
+		) => {
 			if (!userId) {
 				throw new BlogError({
 					message: 'User id is required',
@@ -298,11 +307,56 @@ export class UserUseCases implements IUserUseCases {
 					},
 				});
 			}
-			const { getEmail, getIsDeleted, getPassword, getUserName,getAvatar,getCity,getCountry,getDOB,getFirstName,getGender,getLastName,getZip } =
-			UserEntity.createUserEntity({
+			const {
+				getEmail,
+				getIsDeleted,
+				getPassword,
+				getUserName,
+				getAvatar,
+				getCity,
+				getCountry,
+				getDOB,
+				getFirstName,
+				getGender,
+				getLastName,
+				getZip,
+			} = UserEntity.createUserEntity({
 				...existing,
 				...userData,
 			});
+			// Upload to cloudinary
+			if (req.file) {
+				try {
+					const cloudResponse = <any>await streamUploader(req);
+					const media: IMedia = {
+						url: cloudResponse.secure_url,
+						public_id: cloudResponse.public_id,
+						version: cloudResponse.version,
+						version_id: cloudResponse.version_id,
+						asset_id: cloudResponse.asset_id,
+					};
+
+					const user = await this.userRepository.updateUserById(userId, {
+						email: getEmail(),
+						password: getPassword(),
+						username: getUserName(),
+						isDeleted: getIsDeleted(),
+						avatar: { ...getAvatar(),...media },
+						city: getCity(),
+						country: getCountry(),
+						dob: getDOB(),
+						firstName: getFirstName(),
+						gender: getGender(),
+						lastName: getLastName(),
+						zip: getZip(),
+					});
+
+					return user;
+				} catch (error) {
+					baseLogger.error(JSON.stringify(error));
+					throw new BlogError(error);
+				}
+			}
 			const user = await this.userRepository.updateUserById(userId, {
 				email: getEmail(),
 				password: getPassword(),
@@ -315,7 +369,7 @@ export class UserUseCases implements IUserUseCases {
 				firstName: getFirstName(),
 				gender: getGender(),
 				lastName: getLastName(),
-				zip:getZip()
+				zip: getZip(),
 			});
 
 			return user;

@@ -17,7 +17,7 @@ export interface IUserController {
 
 export interface IUserUseCases {
 	addUserUseCase: (userData: IUser) => Promise<any>;
-	editUserUseCase: (userId: string, userData: Partial<IUser>) => Promise<any>;
+	editUserUseCase: (userId: string, userData: Partial<IUser>,req:IReq) => Promise<any>;
 	deleteUserUseCase: (userId: string) => Promise<any>;
 	listUserUseCase: (query: string) => Promise<any>;
 	listUserByIdUseCase: (query: string) => Promise<any>;

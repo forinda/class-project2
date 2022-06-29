@@ -95,6 +95,7 @@ export class UserController implements IUserController {
 				const response = await this.useCase.editUserUseCase(
 					req.params.id,
 					req.body,
+					req
 				);
 
 				return res.status(200).json({ data: response });
