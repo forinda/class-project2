@@ -16,7 +16,7 @@ export class LikeController implements ILikeController {
 				entity: req.params.id,
 			});
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}

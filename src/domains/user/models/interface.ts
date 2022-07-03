@@ -16,6 +16,7 @@ export interface IUser {
 	avatar:IMedia
 	followings: any[];
 	followers: any[];
+	bio?:string
 }
 
 export interface IMedia {

@@ -19,6 +19,7 @@ export class UserEntity {
 		gender,
 		lastName,
 		zip,
+		bio
 	}: IUser) => {
 		if (!email) {
 			throw new BlogError({
@@ -84,6 +85,7 @@ export class UserEntity {
 			getFirstName: () => firstName,
 			getGender: () => gender,
 			getLastName: () => lastName,
+			getBio: () => bio,
 			getZip: () => zip,
 		});
 	};

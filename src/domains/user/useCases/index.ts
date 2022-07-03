@@ -184,15 +184,6 @@ export class UserUseCases implements IUserUseCases {
 				page,
 			);
 
-			if (followings.length === 0) {
-				throw new BlogError({
-					message: 'You currently do not follow any user',
-					status: 'warning',
-					statusCode: 404,
-					data: {},
-				});
-			}
-
 			return followings;
 		};
 
@@ -206,15 +197,6 @@ export class UserUseCases implements IUserUseCases {
 				limit,
 				page,
 			);
-
-			if (followers.length === 0) {
-				throw new BlogError({
-					message: 'You currently do not have any follower',
-					status: 'warning',
-					statusCode: 404,
-					data: {},
-				});
-			}
 
 			return followers;
 		};
@@ -235,6 +217,7 @@ export class UserUseCases implements IUserUseCases {
 			getGender,
 			getLastName,
 			getZip,
+			getBio
 		} = UserEntity.createUserEntity(userData);
 		const existing = await this.userRepository.findUserByEmail(getEmail());
 		if (existing) {
@@ -262,6 +245,7 @@ export class UserUseCases implements IUserUseCases {
 			gender: getGender(),
 			lastName: getLastName(),
 			zip: getZip(),
+			bio:getBio()
 		});
 
 		return user;
@@ -320,6 +304,7 @@ export class UserUseCases implements IUserUseCases {
 				getGender,
 				getLastName,
 				getZip,
+				getBio
 			} = UserEntity.createUserEntity({
 				...existing,
 				...userData,
@@ -349,6 +334,7 @@ export class UserUseCases implements IUserUseCases {
 						gender: getGender(),
 						lastName: getLastName(),
 						zip: getZip(),
+						bio:getBio()
 					});
 
 					return user;
@@ -370,6 +356,7 @@ export class UserUseCases implements IUserUseCases {
 				gender: getGender(),
 				lastName: getLastName(),
 				zip: getZip(),
+				bio:getBio()
 			});
 
 			return user;

@@ -20,7 +20,7 @@ export class AuthController implements IAuthController {
 				req.body.username,
 				req.body.password,
 			);
-			res.status(200).json({ data: response });
+			res.status(200).json(response);
 		} catch (err) {
 			return next(err);
 		}

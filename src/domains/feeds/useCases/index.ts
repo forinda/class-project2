@@ -47,6 +47,7 @@ export class FeedsUseCases implements IFeedsUseCases {
 			feedData.author = author;
 			// Check if a file or a body
 			// Check if there is media or body
+			console.log(req.file);
 			if (!feedData.body && !req.file) {
 				throw new BlogError({
 					message: 'Cannot create feed without body or media',
@@ -125,14 +126,6 @@ export class FeedsUseCases implements IFeedsUseCases {
 		page: number,
 	) => {
 		const feeds = await this.repository.findFeeds(limit, page);
-		if (feeds.length === 0) {
-			throw new BlogError({
-				message: 'Feeds not found',
-				status: 'warning',
-				statusCode: 404,
-				data: {},
-			});
-		}
 
 		return feeds;
 	};
