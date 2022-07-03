@@ -24,7 +24,6 @@ export class FeedsController implements IFeedsController {
 		next,
 	) => {
 		try {
-			console.log(req.body);
 			
 			const response = await this.useCases.addFeed(
 				req.user.userId,

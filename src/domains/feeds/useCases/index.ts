@@ -47,7 +47,6 @@ export class FeedsUseCases implements IFeedsUseCases {
 			feedData.author = author;
 			// Check if a file or a body
 			// Check if there is media or body
-			console.log(req.file);
 			if (!feedData.body && !req.file) {
 				throw new BlogError({
 					message: 'Cannot create feed without body or media',
@@ -64,7 +63,6 @@ export class FeedsUseCases implements IFeedsUseCases {
 				getIsDeleted,
 				getMedia,
 			} = FeedsEntity.createFeed(feedData);
-			console.log(req.file);
 
 			// Upload to cloudinary
 			if (req.file) {
