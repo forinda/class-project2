@@ -3,7 +3,6 @@ import copy from 'gulp-copy';
 import gulp from 'gulp';
 import path from 'path';
 
-console.log(baseDir);
 
 const copySwaggerDocs = () => {
 	const source = path.join(baseDir, '/src/api-specs/*');

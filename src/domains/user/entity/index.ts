@@ -11,6 +11,15 @@ export class UserEntity {
 		isDeleted,
 		followers,
 		followings,
+		avatar,
+		city,
+		country,
+		dob,
+		firstName,
+		gender,
+		lastName,
+		zip,
+		bio
 	}: IUser) => {
 		if (!email) {
 			throw new BlogError({
@@ -29,7 +38,6 @@ export class UserEntity {
 				data: { email },
 			});
 		}
-
 		if (!password) {
 			throw new BlogError({
 				message: 'Password is required',
@@ -40,7 +48,6 @@ export class UserEntity {
 				},
 			});
 		}
-
 		// Check if password is valid regex
 		if (!validateUserPassword(password)) {
 			throw new BlogError({
@@ -53,7 +60,6 @@ export class UserEntity {
 				},
 			});
 		}
-
 		if (!username) {
 			throw new BlogError({
 				message: 'Username is required',
@@ -72,6 +78,15 @@ export class UserEntity {
 			getIsDeleted: () => isDeleted,
 			getFollowers: () => followers,
 			getFollowings: () => followings,
+			getAvatar: () => avatar,
+			getCity: () => city,
+			getCountry: () => country,
+			getDOB: () => dob,
+			getFirstName: () => firstName,
+			getGender: () => gender,
+			getLastName: () => lastName,
+			getBio: () => bio,
+			getZip: () => zip,
 		});
 	};
 }

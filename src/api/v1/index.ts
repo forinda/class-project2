@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { loadAuthDomain } from '@blog-api-domains/auth';
 import { loadFeedsDomain } from '@blog-api-domains/feeds';
+import { loadLikeDomain } from '@blog-api-domains/likes';
 import { loadTestDomain } from '@blog-api-domains/testDomain';
 import { loadUserDomain } from '@blog-api-domains/user';
 import swagger from '@blog-api-swagger';
@@ -12,6 +13,7 @@ export default () => {
 	loadAuthDomain({ app: router });
 	loadFeedsDomain({ app: router });
 	loadTestDomain({ app: router });
+	loadLikeDomain({ app: router });
 
 	return router;
 };

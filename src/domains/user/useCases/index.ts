@@ -1,10 +1,14 @@
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BlogError } from '@blog-api-common/errors';
-import { IUser } from '../models/interface';
+import { IReq } from '@blog-api-common/requests';
 import { IUserUseCases } from '../interfaces';
 import { UserEntity } from './../entity';
 import { UserRepository } from '../repository';
+import { baseLogger } from '@blog-api-logger';
+import streamUploader from '@blog-api-uploadSdk/streamUploader';
 import { validateMongoId } from '@blog-api-helpers/validateMongoId';
+import { IMedia, IUser } from '../models/interface';
 
 export class UserUseCases implements IUserUseCases {
 	private userRepository: UserRepository = new UserRepository();
@@ -87,7 +91,7 @@ export class UserUseCases implements IUserUseCases {
 				followings: existingUser.followings.concat(userToFollowId),
 			});
 
-			return {followed:true};
+			return { followed: true };
 		};
 
 	unfollowUserUseCase: (
@@ -127,8 +131,12 @@ export class UserUseCases implements IUserUseCases {
 				});
 			}
 			// Update user to beunfollowed
-		
-			if (!userToUnfollow.followers.find((user:any)=>user._id.toString() === userId)) {
+
+			if (
+				!userToUnfollow.followers.find(
+					(user: any) => user._id.toString() === userId,
+				)
+			) {
 				throw new BlogError({
 					message: 'You cannot unfollow user that you do not follow',
 					status: 'warning',
@@ -139,11 +147,15 @@ export class UserUseCases implements IUserUseCases {
 			await this.userRepository.updateUserById(userToUnfollowId, {
 				...userToUnfollow._doc,
 				followers: userToUnfollow.followers.filter(
-					(user:any) => user._id.toString() !== userId,
+					(user: any) => user._id.toString() !== userId,
 				),
 			});
 			// Update the user following
-			if (!existingUser.followings.find((user:any)=>user._id.toString()===userToUnfollowId)) {
+			if (
+				!existingUser.followings.find(
+					(user: any) => user._id.toString() === userToUnfollowId,
+				)
+			) {
 				throw new BlogError({
 					message: 'You cannot unfollow user that you do not follow',
 					status: 'warning',
@@ -154,11 +166,11 @@ export class UserUseCases implements IUserUseCases {
 			await this.userRepository.updateUserById(userId, {
 				...existingUser._doc,
 				followings: existingUser.followings.filter(
-					(user:any) => user._id.toString() !== userToUnfollowId,
+					(user: any) => user._id.toString() !== userToUnfollowId,
 				),
 			});
 
-			return {unfollowed:true};
+			return { unfollowed: true };
 		};
 
 	listUserFollowingsUseCase: (
@@ -171,15 +183,6 @@ export class UserUseCases implements IUserUseCases {
 				limit,
 				page,
 			);
-
-			if (followings.length === 0) {
-				throw new BlogError({
-					message: 'You currently do not follow any user',
-					status: 'warning',
-					statusCode: 404,
-					data: {},
-				});
-			}
 
 			return followings;
 		};
@@ -195,23 +198,27 @@ export class UserUseCases implements IUserUseCases {
 				page,
 			);
 
-			if (followers.length === 0) {
-				throw new BlogError({
-					message: 'You currently do not have any follower',
-					status: 'warning',
-					statusCode: 404,
-					data: {},
-				});
-			}
-
 			return followers;
 		};
 
 	addUserUseCase: (userData: IUser) => Promise<any> = async (
 		userData: IUser,
 	) => {
-		const { getEmail, getIsDeleted, getPassword, getUserName } =
-			UserEntity.createUserEntity(userData);
+		const {
+			getEmail,
+			getIsDeleted,
+			getPassword,
+			getUserName,
+			getAvatar,
+			getCity,
+			getCountry,
+			getDOB,
+			getFirstName,
+			getGender,
+			getLastName,
+			getZip,
+			getBio
+		} = UserEntity.createUserEntity(userData);
 		const existing = await this.userRepository.findUserByEmail(getEmail());
 		if (existing) {
 			throw new BlogError({
@@ -230,6 +237,15 @@ export class UserUseCases implements IUserUseCases {
 			isDeleted: getIsDeleted(),
 			followers: [],
 			followings: [],
+			avatar: getAvatar(),
+			city: getCity(),
+			country: getCountry(),
+			dob: getDOB(),
+			firstName: getFirstName(),
+			gender: getGender(),
+			lastName: getLastName(),
+			zip: getZip(),
+			bio:getBio()
 		});
 
 		return user;
@@ -238,7 +254,12 @@ export class UserUseCases implements IUserUseCases {
 	editUserUseCase: (
 		userId: string,
 		userData: Partial<IUser>,
-	) => Promise<any> = async (userId: string, userData: Partial<IUser>) => {
+		req: IReq,
+	) => Promise<any> = async (
+			userId: string,
+			userData: Partial<IUser>,
+			req: IReq,
+		) => {
 			if (!userId) {
 				throw new BlogError({
 					message: 'User id is required',
@@ -270,16 +291,72 @@ export class UserUseCases implements IUserUseCases {
 					},
 				});
 			}
-			const { getEmail, getIsDeleted, getPassword, getUserName } =
-			UserEntity.createUserEntity({
+			const {
+				getEmail,
+				getIsDeleted,
+				getPassword,
+				getUserName,
+				getAvatar,
+				getCity,
+				getCountry,
+				getDOB,
+				getFirstName,
+				getGender,
+				getLastName,
+				getZip,
+				getBio
+			} = UserEntity.createUserEntity({
 				...existing,
 				...userData,
 			});
+			// Upload to cloudinary
+			if (req.file) {
+				try {
+					const cloudResponse = <any>await streamUploader(req);
+					const media: IMedia = {
+						url: cloudResponse.secure_url,
+						public_id: cloudResponse.public_id,
+						version: cloudResponse.version,
+						version_id: cloudResponse.version_id,
+						asset_id: cloudResponse.asset_id,
+					};
+
+					const user = await this.userRepository.updateUserById(userId, {
+						email: getEmail(),
+						password: getPassword(),
+						username: getUserName(),
+						isDeleted: getIsDeleted(),
+						avatar: { ...getAvatar(),...media },
+						city: getCity(),
+						country: getCountry(),
+						dob: getDOB(),
+						firstName: getFirstName(),
+						gender: getGender(),
+						lastName: getLastName(),
+						zip: getZip(),
+						bio:getBio()
+					});
+
+					return user;
+				} catch (error) {
+					baseLogger.error(JSON.stringify(error));
+					throw new BlogError(error);
+				}
+			}
 			const user = await this.userRepository.updateUserById(userId, {
 				email: getEmail(),
 				password: getPassword(),
 				username: getUserName(),
 				isDeleted: getIsDeleted(),
+				avatar: getAvatar(),
+				city: getCity(),
+				country: getCountry(),
+				dob: getDOB(),
+				firstName: getFirstName(),
+				gender: getGender(),
+				lastName: getLastName(),
+				zip: getZip(),
+				bio:getBio()
 			});
 
 			return user;

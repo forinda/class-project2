@@ -2,7 +2,7 @@
 import { INext,IReq,IRes } from '@blog-api-common/requests';
 
 export interface IAuthUseCases {
-	signIn: (queryString: string, password: string) => Promise<any>;
+	signIn: (username: string, password: string) => Promise<any>;
 }
 
 export interface IAuthRepository {

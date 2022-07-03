@@ -5,9 +5,26 @@ export interface IUser {
 	email: string;
 	username: string;
 	password: string;
+	firstName?:string
+	lastName?:string
+	dob?:string
+	gender?:'male'|'female'|'other'
+	city?:string
+	zip?:string
+	country?:string
 	isDeleted?: boolean;
+	avatar:IMedia
 	followings: any[];
 	followers: any[];
+	bio?:string
+}
+
+export interface IMedia {
+	asset_id: string;
+	public_id: string;
+	version: string;
+	version_id: string;
+	url: string;
 }
 
 export interface IUserDocument extends IUser,mongoose.Document {

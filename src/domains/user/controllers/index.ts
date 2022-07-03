@@ -12,7 +12,7 @@ export class UserController implements IUserController {
 					req.user.userId,
 					req.params.id,
 				);
-				res.status(200).json({ data: response });
+				res.status(200).json(response);
 			} catch (err) {
 				return next(err);
 			}
@@ -28,7 +28,7 @@ export class UserController implements IUserController {
 					req.user.userId,
 					req.params.id,
 				);
-				res.status(200).json({ data: response });
+				res.status(200).json(response);
 			} catch (err) {
 				return next(err);
 			}
@@ -47,7 +47,7 @@ export class UserController implements IUserController {
 						: 10,
 					req.query.page? <number><unknown>(<string>(<unknown>req.query.page)) : 1,
 				);
-				res.status(200).json({ data: response });
+				res.status(200).json(response);
 			} catch (err) {
 				return next(err);
 			}
@@ -63,7 +63,7 @@ export class UserController implements IUserController {
 						: 10,
 					req.query.page? <number><unknown>(<string>(<unknown>req.query.page)) : 1,
 				);
-				res.status(200).json({ data: response });
+				res.status(200).json(response);
 			} catch (err) {
 				return next(err);
 			}
@@ -83,7 +83,7 @@ export class UserController implements IUserController {
 			try {
 				const response = await this.useCase.addUserUseCase(req.body);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -95,9 +95,10 @@ export class UserController implements IUserController {
 				const response = await this.useCase.editUserUseCase(
 					req.params.id,
 					req.body,
+					req
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -110,7 +111,7 @@ export class UserController implements IUserController {
 					req.params.id,
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -123,7 +124,7 @@ export class UserController implements IUserController {
 					req.params.id,
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -143,7 +144,7 @@ export class UserController implements IUserController {
 						: 1,
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -158,7 +159,7 @@ export class UserController implements IUserController {
 						: '',
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}

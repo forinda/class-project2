@@ -63,7 +63,6 @@ export class FeedsUseCases implements IFeedsUseCases {
 				getIsDeleted,
 				getMedia,
 			} = FeedsEntity.createFeed(feedData);
-			console.log(req.file);
 
 			// Upload to cloudinary
 			if (req.file) {
@@ -125,14 +124,6 @@ export class FeedsUseCases implements IFeedsUseCases {
 		page: number,
 	) => {
 		const feeds = await this.repository.findFeeds(limit, page);
-		if (feeds.length === 0) {
-			throw new BlogError({
-				message: 'Feeds not found',
-				status: 'warning',
-				statusCode: 404,
-				data: {},
-			});
-		}
 
 		return feeds;
 	};

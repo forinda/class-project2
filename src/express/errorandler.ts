@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BlogError } from '@blog-api-common/errors';
+import { baseLogger } from '@blog-api-logger';
 import { capitalize } from 'string-shuffle';
 import { INext, IReq, IRes } from '@blog-api-common/requests';
 
@@ -37,10 +38,11 @@ export default (err: any, req: IReq, res: IRes, next: INext) => {
 			data: { error },
 		});
 	}
+	baseLogger.error(JSON.stringify(err));
 
 	return res.status(500).json({
 		status: 'error',
-		message: err.message ? err.message : 'Internal server error',
+		message: 'Internal server error',
 		data: {}
 	});
 };

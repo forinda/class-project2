@@ -24,6 +24,7 @@ export class FeedsController implements IFeedsController {
 		next,
 	) => {
 		try {
+			
 			const response = await this.useCases.addFeed(
 				req.user.userId,
 				req.body,
@@ -44,7 +45,7 @@ export class FeedsController implements IFeedsController {
 		try {
 			const response = await this.useCases.listFeed(req.params.id);
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}
@@ -61,7 +62,7 @@ export class FeedsController implements IFeedsController {
 				req.query.page ? <number>(<unknown>req.query.page) : 1,
 			);
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}
@@ -78,7 +79,7 @@ export class FeedsController implements IFeedsController {
 				req.body,
 			);
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}
@@ -92,7 +93,7 @@ export class FeedsController implements IFeedsController {
 		try {
 			const response = await this.useCases.deleteFeed(req.params.id);
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}
@@ -105,7 +106,7 @@ export class FeedsController implements IFeedsController {
 					req.user.userId,
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -120,7 +121,7 @@ export class FeedsController implements IFeedsController {
 					req.query.page ? <number>(<unknown>req.query.page) : 1,
 				);
 
-				return res.status(200).json({ data: response });
+				return res.status(200).json(response);
 			} catch (error) {
 				return next(error);
 			}
@@ -138,7 +139,7 @@ export class FeedsController implements IFeedsController {
 				req.query.page ? <number>(<unknown>req.query.page) : 1,
 			);
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}
@@ -156,7 +157,7 @@ export class FeedsController implements IFeedsController {
 				req.query.page ? <number>(<unknown>req.query.page) : 1,
 			);
 
-			return res.status(200).json({ data: response });
+			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}

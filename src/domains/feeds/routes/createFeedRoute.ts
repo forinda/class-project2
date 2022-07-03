@@ -7,5 +7,5 @@ export const createFeedRoute = ({ app }: { app: Router }) => {
 	const feedController = new FeedsController();
 	const router = Router();
 	app.use(router);
-	router.post('/new',loginRequired,uploader.single('featuredImage'),feedController.createFeed);
+	router.post('/new',loginRequired,uploader.single('image'),feedController.createFeed);
 };
