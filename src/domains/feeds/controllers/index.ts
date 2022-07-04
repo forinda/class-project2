@@ -116,7 +116,7 @@ export class FeedsController implements IFeedsController {
 		async (req, res, next) => {
 			try {
 				const response = await this.useCases.listFeedsByUser(
-					req.params.id,
+					req.user.userId,
 					req.query.limit ? <number>(<unknown>req.query.limit) : 10,
 					req.query.page ? <number>(<unknown>req.query.page) : 1,
 				);
