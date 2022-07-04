@@ -1,7 +1,7 @@
 import { BlogError } from '@blog-api-common/errors';
 import { IUser } from '../models/interface';
 import { validateEmail } from '@blog-api-helpers/emailValidator';
-import { validateUserPassword } from '../utils/validateUserPassword';
+// import { validateUserPassword } from '../utils/validateUserPassword';
 
 export class UserEntity {
 	static createUserEntity = ({
@@ -49,17 +49,17 @@ export class UserEntity {
 			});
 		}
 		// Check if password is valid regex
-		if (!validateUserPassword(password)) {
-			throw new BlogError({
-				message:
-					'Password must be at least 8 characters, at least one number, one special character and one letter',
-				status: 'warning',
-				statusCode: 400,
-				data: {
-					password,
-				},
-			});
-		}
+		// if (!validateUserPassword(password)) {
+		// 	throw new BlogError({
+		// 		message:
+		// 			'Password must be at least 8 characters, at least one number, one special character and one letter',
+		// 		status: 'warning',
+		// 		statusCode: 400,
+		// 		data: {
+		// 			password,
+		// 		},
+		// 	});
+		// }
 		if (!username) {
 			throw new BlogError({
 				message: 'Username is required',
