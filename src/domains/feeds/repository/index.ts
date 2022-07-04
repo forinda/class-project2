@@ -25,7 +25,10 @@ export class FeedsRepository implements IFeedsRepository {
 	};
 
 	findFeedById: (id: string) => Promise<any> = async (id: string) => {
-		const feed = await FeedsModel.findById(id).populate('author','username avatar');
+		const feed = await FeedsModel.findById(id).populate(
+			'author',
+			'username avatar',
+		);
 
 		return feed;
 	};
@@ -35,7 +38,7 @@ export class FeedsRepository implements IFeedsRepository {
 		page: number,
 	) => {
 		const feeds = await FeedsModel.find({})
-		.populate('author','username avatar')
+			.populate('author', 'username avatar')
 			.limit(limit)
 			.skip((page - 1) * limit)
 			.sort({ createdAt: -1 });
@@ -82,7 +85,9 @@ export class FeedsRepository implements IFeedsRepository {
 
 	findFeedsByUser: (id: string, limit: number, page: number) => Promise<any> =
 		async (id: string, limit: number, page: number) => {
+			console.log('Id: ', id);
 			const feeds = await FeedsModel.find({ author: id })
+				.populate('author', 'username avatar')
 				.limit(limit)
 				.skip((page - 1) * limit)
 				.sort({ createdAt: -1 });
