@@ -3,8 +3,9 @@ import chalk from 'chalk';
 import { createServer } from 'http';
 import moment from 'moment';
 import { port } from './config';
+import socketServer from '@blog-api-socket-server';
 
-const server = createServer(app);
+const server = socketServer({ server: createServer(app) });
 
 server.listen(port, () => {
 	const msg = JSON.stringify({

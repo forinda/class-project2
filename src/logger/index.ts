@@ -91,6 +91,32 @@ export const dbLogger = winston.createLogger({
 	exitOnError: false,
 });
 
+export const socketLogger = winston.createLogger({
+	transports: [
+		new winston.transports.Console({
+			format: winston.format.combine(
+				winston.format.colorize(),
+				winston.format.simple(),
+			),
+		}),
+		new winston.transports.File({
+			filename: path.join(
+				baseDir,
+				`logs/socket-logs/${moment().format(
+					'YYYY-MM-DD',
+				)}-socket.log`,
+			),
+			level: 'info',
+			format: winston.format.combine(
+				winston.format.timestamp(),
+				winston.format.json(),
+			),
+		}),
+	],
+	exitOnError: false,
+});
+
+
 export const processLogger = winston.createLogger({
 	transports: [
 		new winston.transports.Console({
