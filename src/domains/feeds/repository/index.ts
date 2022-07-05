@@ -37,11 +37,68 @@ export class FeedsRepository implements IFeedsRepository {
 		limit: number,
 		page: number,
 	) => {
-		const feeds = await FeedsModel.find({})
-			.populate('author', 'username avatar')
-			.limit(limit)
-			.skip((page - 1) * limit)
-			.sort({ createdAt: -1 });
+		const feeds = await FeedsModel.aggregate([
+			{
+				$match: {},
+			},
+			{ $limit: limit },
+			{ $skip: limit * (page - 1) },
+			{
+				$lookup: {
+					from: 'likes',
+					localField: '_id',
+					foreignField: 'entity',
+					as: 'postLikes',
+				},
+			},
+			{
+				$lookup: {
+					from: 'users',
+					localField: 'author',
+					foreignField: '_id',
+					as: 'postAuthor',
+				},
+			},
+			{
+				$addFields: {
+					likes: {
+						$size: '$postLikes',
+					},
+					pAuthor: {
+						$first: '$postAuthor',
+					},
+				},
+			},
+			{
+				$addFields: {
+					pAuthor: {
+						$first: '$postAuthor',
+					},
+				},
+			},
+			{
+				$project: {
+					author: {
+						_id: '$pAuthor._id',
+						avatar: '$pAuthor.avatar',
+						username: '$pAuthor.username',
+						email: '$pAuthor.email',
+					},
+					media: 1,
+					likes: 1,
+					createdAt: 1,
+					updatedAt: '$updatedAt',
+					body: '$body',
+					tags: 1,
+				},
+			},
+		]);
+		/*
+		.populate('author', 'username avatar')
+		.limit(limit)
+		.skip((page - 1) * limit)
+		.sort({ createdAt: -1 });
+		*/
 
 		return feeds;
 	};
