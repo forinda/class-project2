@@ -65,6 +65,18 @@
       "@blog-api-domains/*": [
         "./src/domains/*"
       ],
+      "@blog-api-socket-server": [
+        "./src/socket-server"
+      ],
+      "@blog-api-socket-server/*": [
+        "./src/socket-server/*"
+      ],
+      "@blog-api-sockets": [
+        "./src/sockets"
+      ],
+      "@blog-api-sockets/*": [
+        "./src/sockets/*"
+      ],
       "@blog-api-api": [
         "./src/api"
       ],
@@ -88,7 +100,8 @@
       ],
       "@blog-api-uploader/*": [
         "./src/uploader/*"
-      ],"@blog-api-uploadSdk": [
+      ],
+      "@blog-api-uploadSdk": [
         "./src/uploadSdk"
       ],
       "@blog-api-uploadSdk/*": [
