@@ -71,7 +71,7 @@ export class UserRepository implements IUserRepository {
 		return UserModel.aggregate([
 			{
 				$match: {
-					isDeleted: false,
+					
 				},
 			},
 			{
@@ -84,6 +84,8 @@ export class UserRepository implements IUserRepository {
 					},
 				},
 			},
+			{$limit:limit},
+			{$skip:limit*(page-1)},
 			{
 				$project: {
 					avatar: '$avatar.url',
