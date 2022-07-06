@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import { createServer } from 'http';
 import moment from 'moment';
 import { port } from './config';
-import socketServer from '@blog-api-socket-server';
+import socketServer from './socket-server';
 
 const server = socketServer({ server: createServer(app) });
 
