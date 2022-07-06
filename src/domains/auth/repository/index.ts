@@ -10,6 +10,8 @@ export class AuthRepository implements IAuthRepository {
 			$or: [{ email: queryString }, { username: queryString }],
 			$and: [{ isDeleted: { $ne: true } }],
 		}).select('+password');
+		if (!user) 
+			return null;
 
 		return user;
 	};

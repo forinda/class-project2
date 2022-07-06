@@ -44,12 +44,12 @@ export class AuthUseCases implements IAuthUseCases {
 			});
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const { password: _pass, ...props } = user._doc;
+		const { password: _pass,avatar:av, ...props } = user._doc;
 		const accessToken = Jwt.generateToken({
 			userId: props._id,
 			email: props.email,
 		});
 
-		return { user: props, accessToken };
+		return { user: {...props,avatar:av.url}, accessToken };
 	};
 }

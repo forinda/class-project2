@@ -8,7 +8,7 @@ export type JwtPayload = {
 
 export class Jwt {
 	public static generateToken(user: JwtPayload): string {
-		return jwt.sign(user, secretKey, { expiresIn: '24h' });
+		return jwt.sign(user, secretKey, { expiresIn: '270h' });
 	}
 
 	public static verifyToken(token: string): JwtPayload {
