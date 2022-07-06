@@ -42,6 +42,7 @@ export class FeedsRepository implements IFeedsRepository {
 				$match: {},
 			},
 			{ $limit: limit },
+			
 			{ $skip: limit * (page - 1) },
 			{
 				$lookup: {
@@ -69,6 +70,7 @@ export class FeedsRepository implements IFeedsRepository {
 					},
 				},
 			},
+			{ $sort: { createdAt: -1 } },
 			{
 				$addFields: {
 					pAuthor: {
@@ -80,11 +82,11 @@ export class FeedsRepository implements IFeedsRepository {
 				$project: {
 					author: {
 						_id: '$pAuthor._id',
-						avatar: '$pAuthor.avatar',
+						avatar: '$pAuthor.avatar.url',
 						username: '$pAuthor.username',
 						email: '$pAuthor.email',
 					},
-					media: 1,
+					media: '$media.url',
 					likes: 1,
 					createdAt: 1,
 					updatedAt: '$updatedAt',

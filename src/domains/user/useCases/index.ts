@@ -27,6 +27,14 @@ export class UserUseCases implements IUserUseCases {
 					},
 				});
 			}
+			if(userToFollowId===userId){
+				throw new BlogError({
+					message: 'You cannot follow yourself',
+					status: 'warning',
+					statusCode: 404,
+					data: {},
+				});
+			}
 			const existingUser =
 			await this.userRepository.findUserByIdAndFollowings(userId);
 			if (!existingUser) {
@@ -106,6 +114,14 @@ export class UserUseCases implements IUserUseCases {
 					data: {
 						userToUnfollowId,
 					},
+				});
+			}
+			if(userToUnfollowId===userId){
+				throw new BlogError({
+					message: 'You cannot unfollow yourself',
+					status: 'warning',
+					statusCode: 404,
+					data: {},
 				});
 			}
 			const existingUser =
