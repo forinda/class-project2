@@ -17,7 +17,7 @@
         "afterDeclarations": true
       }
     ],
-    "target": "es2017",
+    "target": "es2022",
     "module": "commonjs",
     "lib": [
       "dom",
