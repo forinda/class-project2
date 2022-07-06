@@ -6,8 +6,13 @@ import { Password } from '@blog-api-helpers/password';
 import UserModel from '../models';
 
 export class UserRepository implements IUserRepository {
-	findUserByIdAndFollowings: (userId: string) => Promise<any>=async(userId: string) => {
-		const user = await UserModel.findById(userId).populate('followings').populate('followers').select('+password +followings +followers');
+	findUserByIdAndFollowings: (userId: string) => Promise<any> = async (
+		userId: string,
+	) => {
+		const user = await UserModel.findById(userId)
+			.populate('followings')
+			.populate('followers')
+			.select('+password +followings +followers');
 
 		return user;
 	};
@@ -20,7 +25,7 @@ export class UserRepository implements IUserRepository {
 			const followers = await UserModel.findById(userId)
 				.populate('followers')
 				.limit(limit)
-				.skip(limit * (page-1));
+				.skip(limit * (page - 1));
 
 			return followers!.followers;
 		};
@@ -29,15 +34,11 @@ export class UserRepository implements IUserRepository {
 		userId: string,
 		limit: number,
 		page: number,
-	) => Promise<any> = async (
-			userId: string,
-			limit: number,
-			page: number,
-		) => {
+	) => Promise<any> = async (userId: string, limit: number, page: number) => {
 			const followers = await UserModel.findById(userId)
 				.populate('followings')
 				.limit(limit)
-				.skip(limit * (page-1));
+				.skip(limit * (page - 1));
 
 			return followers!.followings;
 		};
@@ -67,9 +68,38 @@ export class UserRepository implements IUserRepository {
 		limit: number,
 		page: number,
 	) => {
-		return UserModel.find({})
-			.limit(limit)
-			.skip((page -1)* limit);
+		return UserModel.aggregate([
+			{
+				$match: {
+					isDeleted: false,
+				},
+			},
+			{
+				$addFields: {
+					followers: {
+						$size: '$followers',
+					},
+					followings: {
+						$size: '$followings',
+					},
+				},
+			},
+			{
+				$project: {
+					avatar: '$avatar.url',
+					username: 1,
+					firstName: 1,
+					lastName: 1,
+					email: 1,
+					gender: 1,
+					city: 1,
+					followers: 1,
+					followings: 1,
+				},
+			},
+		]);
+		// .limit(limit)
+		// .skip((page -1)* limit);
 	};
 
 	findUserByEmail: (email: string) => Promise<any> = async (

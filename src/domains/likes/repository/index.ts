@@ -7,6 +7,8 @@ import feedsModel from '@blog-api-domains/feeds/models';
 export class LikeRepository implements ILikeRepository {
 	createLike: (like: ILike) => Promise<any> = async (like: ILike) => {
 		const existingLike = await Like.findOne({ ...like });
+		console.log(existingLike);
+		
 		const post = await feedsModel.findById(like.entity);
 		if (!post) 
 			return {};
