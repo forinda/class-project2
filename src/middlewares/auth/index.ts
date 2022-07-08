@@ -2,6 +2,7 @@ import { BlogError } from '@blog-api-common/errors';
 import { JwtPayload } from '@blog-api-helpers/jwt';
 import jwt from 'jsonwebtoken';
 import { secretKey } from '@blog-api-config';
+import userModel from '@blog-api-domains/user/models';
 import { INext, IReq, IRes } from '@blog-api-common/requests';
 
 class AuthMiddleware {
@@ -30,7 +31,7 @@ class AuthMiddleware {
 				);
 			}
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			jwt.verify(token, secretKey, (err: any, decoded: any) => {
+			jwt.verify(token, secretKey, async (err: any, decoded: any) => {
 				if (err) {
 					return next(
 						new BlogError({
@@ -41,7 +42,17 @@ class AuthMiddleware {
 						}),
 					);
 				}
+
 				req.user = decoded as JwtPayload;
+				const dbUser = await userModel.findById(req.user.userId);
+				if (!dbUser) {
+					throw new BlogError({
+						message: 'Please login',
+						status: 'warning',
+						statusCode: 401,
+						data: {},
+					});
+				}
 				next();
 			});
 		} catch (err) {
