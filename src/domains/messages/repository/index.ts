@@ -1,25 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ILike } from '../models/interface';
-import { ILikeRepository } from '../interfaces';
-import Like from '../models';
-import feedsModel from '@blog-api-domains/feeds/models';
+import { IMessage } from '../models/interface';
+import { IMessageRepository } from '../interfaces';
+import Message from '../models';
 
-export class LikeRepository implements ILikeRepository {
-	createLike: (like: ILike) => Promise<any> = async (like: ILike) => {
-		const existingLike = await Like.findOne({ ...like });
-		console.log(existingLike);
-		
-		const post = await feedsModel.findById(like.entity);
-		if (!post) 
-			return {};
-		
-		if (existingLike) {
-			await Like.findByIdAndDelete(existingLike._id);
+export class MessageRepository implements IMessageRepository {
+	createMessage: (message: IMessage) => Promise<any> = async (message) => {
+		const newMessage = await Message.create(message);
 
-			return existingLike;
-		}
-		const newLike = await Like.create({ ...like });
+		return newMessage;
+	};
 
-		return newLike;
+	deleteMessageById: (messageId: string) => Promise<any> = async (
+		messageId,
+	) => {
+		await Message.findByIdAndUpdate(
+			messageId,
+			{ isDeleted: true },
+			{ new: true },
+		);
+
+		return { deleted: true };
+	};
+
+	getConverMessages: (conversationId: string) => Promise<any> = async (
+		conversationId,
+	) => {
+		const messages = await Message.find({ conversation: conversationId });
+
+		return messages;
 	};
 }

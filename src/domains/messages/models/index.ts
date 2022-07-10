@@ -2,7 +2,7 @@
 import mongoose from '@blog-api-databases/mongodb';
 import { IMessageDocument, IMessageModel } from './interface';
 
-const conversationSchema: mongoose.Schema<IMessageDocument> =
+const messageSchema: mongoose.Schema<IMessageDocument> =
 	new mongoose.Schema(
 		{
 			sender: {
@@ -34,6 +34,6 @@ const conversationSchema: mongoose.Schema<IMessageDocument> =
 const feedsModel: IMessageModel = mongoose.model<
 	IMessageDocument,
 	IMessageModel
->('Message', conversationSchema);
+>('Message', messageSchema);
 
 export default feedsModel;

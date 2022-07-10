@@ -1,43 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { BlogError } from '@blog-api-common/errors';
-import { ILike } from '../models/interface';
-import { LikeEntity } from '../entity';
-import { LikeRepository } from '../repository';
-import { ILikeRepository, ILikeUseCase } from '../interfaces';
+import { IMessage } from '../models/interface';
+import { MessageEntity } from '../entity';
+import { MessageRepository } from '../repository';
+import { IMessageRepository, IMessageUseCase } from '../interfaces';
 
-export class LikeUseCase implements ILikeUseCase {
-	private repository: ILikeRepository = new LikeRepository();
+export class MessageUseCase implements IMessageUseCase {
+	private repository: IMessageRepository = new MessageRepository();
 
-	addLike: (like: ILike) => Promise<any> = async ({
-		author,
-		entity,
-	}: ILike) => {
-		if (!author) {
-			throw new BlogError({
-				message: 'Author id required',
-				statusCode: 400,
-				status: 'warning',
-				data: {},
-			});
-		}
-		if (!entity) {
-			throw new BlogError({
-				message: 'Author id required',
-				statusCode: 400,
-				status: 'warning',
-				data: {},
-			});
-		}
-		const { getAuthor, getEntity } = LikeEntity.createLike({
-			author,
-			entity,
-		});
-
-		const response = await this.repository.createLike({
-			author: getAuthor(),
-			entity: getEntity(),
+	addMessage: (message: IMessage) => Promise<any> = async (message) => {
+		const { getConversation, getIsDeleted, getSender, getText } =
+			MessageEntity.createMessage(message);
+		const response = await this.repository.createMessage({
+			conversation: getConversation(),
+			sender: getSender(),
+			text: getText(),
+			isDeleted: getIsDeleted(),
 		});
 
 		return response;
 	};
+
+	removeMessage: (messageId: string) => Promise<any> = async (messageId) => {
+		const response = await this.repository.deleteMessageById(messageId);
+
+		return response;
+	};
+
+	listMessageByConversation: (conversationId: string) => Promise<any> =
+		async (conversationId) => {
+			const messages = await this.repository.getConverMessages(
+				conversationId,
+			);
+
+			return messages;
+		};
 }

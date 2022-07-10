@@ -1,20 +1,33 @@
 import { BlogError } from '@blog-api-common/errors';
-import { ILike } from '../models/interface';
+import { IMessage } from '../models/interface';
 import { validateMongoId } from '@blog-api-helpers/validateMongoId';
 
-export class LikeEntity {
-	static createLike = ({ author, entity }: ILike) => {
-		if (!validateMongoId(author)) {
+export class MessageEntity {
+	static createMessage = ({
+		conversation,
+		sender,
+		text,
+		isDeleted,
+	}: IMessage) => {
+		if (!validateMongoId(sender)) {
 			throw new BlogError({
-				message: 'Invalid user id',
+				message: 'Invalid sender id',
 				status: 'warning',
 				statusCode: 400,
 				data: {},
 			});
 		}
-		if (!validateMongoId(entity)) {
+		if (!validateMongoId(conversation)) {
 			throw new BlogError({
-				message: 'Invalid post id',
+				message: 'Invalid conversation id',
+				status: 'warning',
+				statusCode: 400,
+				data: {},
+			});
+		}
+		if (!validateMongoId(text)) {
+			throw new BlogError({
+				message: 'Message cannot be empty',
 				status: 'warning',
 				statusCode: 400,
 				data: {},
@@ -22,8 +35,10 @@ export class LikeEntity {
 		}
 
 		return Object.freeze({
-			getAuthor: () => author,
-			getEntity: () => entity,
+			getConversation: () => conversation,
+			getText: () => text,
+			getSender: () => sender,
+			getIsDeleted: () => (isDeleted ? isDeleted : false),
 		});
 	};
 }

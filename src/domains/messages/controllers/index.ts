@@ -1,24 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ILikeController, ILikeUseCase } from '../interfaces';
+import { IMessageController, IMessageUseCase } from '../interfaces';
 import { INext, IReq, IRes } from '@blog-api-common/requests';
 
-export class LikeController implements ILikeController {
-	constructor(private useCase: ILikeUseCase) {}
+export class MessageController implements IMessageController {
+	constructor(private useCase: IMessageUseCase) {}
 
-	likePost: (req: IReq, res: IRes, next: INext) => Promise<any> =async (
+	postnewMessage: (req: IReq, res: IRes, next: INext) => Promise<any> =
+		async (req, res, next) => {
+			try {
+				const response = this.useCase
+			} catch (error) {
+				return next(error);
+			}
+		};
+
+	deleteMessage: (req: IReq, res: IRes, next: INext) => Promise<any> = async (
 		req,
 		res,
 		next,
 	) => {
 		try {
-			const response = await this.useCase.addLike({
-				author: req.user.userId,
-				entity: req.params.id,
-			});
-
-			return res.status(200).json(response);
 		} catch (error) {
 			return next(error);
 		}
 	};
+
+	getMessagesByConversation: (
+		req: IReq,
+		res: IRes,
+		next: INext,
+	) => Promise<any> = async (req, res, next) => {
+			try {
+			} catch (error) {
+				return next(error);
+			}
+		};
 }
