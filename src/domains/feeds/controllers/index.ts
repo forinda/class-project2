@@ -58,7 +58,7 @@ export class FeedsController implements IFeedsController {
 	) => {
 		try {
 			const response = await this.useCases.listFeeds(
-				req.query.limit ? <number>(<unknown>req.query.limit) : 10,
+				req.query.limit ? <number>(<unknown>req.query.limit) : 50,
 				req.query.page ? <number>(<unknown>req.query.page) : 1,
 			);
 
@@ -117,7 +117,7 @@ export class FeedsController implements IFeedsController {
 			try {
 				const response = await this.useCases.listFeedsByUser(
 					req.user.userId,
-					req.query.limit ? <number>(<unknown>req.query.limit) : 10,
+					req.query.limit ? <number>(<unknown>req.query.limit) : 50,
 					req.query.page ? <number>(<unknown>req.query.page) : 1,
 				);
 
@@ -135,7 +135,7 @@ export class FeedsController implements IFeedsController {
 		try {
 			const response = await this.useCases.listFeedsByTag(
 				req.params.tag,
-				req.query.limit ? <number>(<unknown>req.query.limit) : 10,
+				req.query.limit ? <number>(<unknown>req.query.limit) : 50,
 				req.query.page ? <number>(<unknown>req.query.page) : 1,
 			);
 
